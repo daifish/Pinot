@@ -1,0 +1,14 @@
+Hadoop使用版本:2.6.0
+Hadoop配置方式:全分布式
+虚拟机:Ubuntu 14.04
+参考配置链接:http://www.aboutyun.com/home.php?mod=space&do=share&view=all
+参考官网配置:http://hadoop.apache.org/docs/r2.6.0/
+
+遇到的问题:
+配置3台机器，以我的配置为例
+/etc/hosts:
+192.168.55.133 ubuntu   #主机
+192.168.55.128 node1    #从节点
+192.168.55.132 node2    #从节点
+在/etc/hostname将host名依次改好，主机为ubuntu 从节点分别为node1, node2
+
