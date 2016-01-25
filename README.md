@@ -8,3 +8,5 @@
 ####2.使用hbase
 ####3.pinot 
 github地址：https://github.com/linkedin/pinot/wiki
+####4.使用zookeeper
+####5.使用kafka
