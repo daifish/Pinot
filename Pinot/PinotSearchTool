@@ -1,0 +1,75 @@
+package com.example;
+/**
+The Java api demo for connect the pinot
+*/
+import java.util.Properties;
+
+import com.linkedin.pinot.client.Connection;
+import com.linkedin.pinot.client.ConnectionFactory;
+import com.linkedin.pinot.client.PreparedStatement;
+import com.linkedin.pinot.client.ResultSet;
+import com.linkedin.pinot.client.ResultSetGroup;
+
+public class PinotSearchTool {
+	 //the object for connect to zookeeper
+	 Connection connection = null;
+	 /**
+	  * establish the connect to zookeeper, by default for me use the table flight29
+	  * btw, there is another way to connect by fromZookeeper, but failed, when it's ok i will commit it
+	  * pinot : https://github.com/linkedin/pinot/wiki/Pinot-Client-API
+	  */
+	 public PinotSearchTool () {
+		 /**
+		  * @param props -> require brokerList only and split with ',' demo: "node1:8099,node2,8099"
+		  * @return connection -> the connect to zookeeper
+		  */
+		 Properties props = new Properties();
+		 props.put("brokerList", "192.168.55.133:8099");
+		 connection = ConnectionFactory.fromProperties(props);
+		 /**
+		  * @param the string for brokerList, just input like : "node1:8099"
+		  * @return connection -> the connect to zookeeper
+		  */
+//		 connection = ConnectionFactory.fromHostList("192.168.55.133:8099");
+	 }
+	 /**
+	  * @param void
+	  * @return void
+	  * get the result for select
+	  */
+	 public void getResult() {
+		 /**
+		  * the search for PreparedStatement
+		  * by default there is one resultSet, we can get the ResultSet by getResultSet(0)
+		  */
+//		 PreparedStatement statement = connection.prepareStatement
+//			     ("select * from flight29 where Carrier = ?");
+//		 
+//		 statement.setString(0, "AA");
+//		 
+//		 ResultSet resultSet = statement.execute().getResultSet(0);
+		 /**
+		  * the case which resultSet is two, process them each
+		  */
+//		 ResultSetGroup resultSetGroup = connection.execute
+//			     ("select min(flight29), max(flight29) from bar group by baz");
+		 //the min(flight29) resultSet
+//		 ResultSet minResultSet = resultSetGroup.getResultSet(0);
+		 //the max(flight29) resultSet
+//		 ResultSet maxResultSet = resultSetGroup.getResultSet(1);
+		 /**
+		  * by default the resultSet will return 10 records, can change the number by limit
+		  */
+		 ResultSet resultSet = connection.execute
+				 ("select * from flight29 limit 50").getResultSet(0);
+		 /**
+		  * get the data
+		  */
+		 for (int i = 0; i < resultSet.getRowCount(); i ++) {
+			 System.out.println("number is : " + i);
+			 for (int j = 0; j < resultSet.getColumnCount(); j ++) {
+				 System.out.println("*********" + resultSet.getString(i,j));
+			 }
+		 }
+	 }
+}
