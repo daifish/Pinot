@@ -1,5 +1,5 @@
 ===================================
-#PinotForYR
+#Pinot
 
 
 ##纪录pinot的部署工作
@@ -10,3 +10,4 @@
 github地址：https://github.com/linkedin/pinot/wiki
 ####4.使用zookeeper
 ####5.使用kafka(添加了consumer第一次接不到数据的异常处理方案)
+####6.使用rocketmq
