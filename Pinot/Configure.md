@@ -19,9 +19,13 @@
 #####1.启动相关的zookeeper、controller、server、broker
 #####执行指令：
     bin/pinot-admin.sh StartZookeeper
-    bin/pinot-admin.sh StartController
+    bin/pinot-admin.sh StartController 
     bin/pinot-admin.sh StartBroker 
     bin/pinot-admin.sh StartServer
+#####本处说明下start指令中可能用到的参数
+    bin/pinot-admin.sh StartController -controllerHost host地址 -controllerPort port端口（默认9000） -dataDir 路径（保存数据的文件夹路径，默认在/tmp文件夹下，最好修改） -clusterName 簇名字（默认为PinotCluster） -zkAddress zookeeper地址及端口
+    bin/pinot-admin.sh StartBroker -brokerHost host地址 -brokerPort port端口（默认8099） -zkAddress zookeeper地址及端口(默认localhost:2181) -clusterName 簇名字（默认为PinotCluster
+    bin/pinot-admin.sh StartServer -serverHost host地址 -serverPort(默认8098) -dataDir 路径（保存server数据的文件夹路径，默认在/tmp文件夹下，最好修改）-segmentDir 路径(保存segments的文件夹路径，同样默认在/tmp下，最好修改) -zkAddress zookeeper地址及端口(默认localhost:2181)
 #####2.创建schema 
 #####执行指令：
     bin/pinot-admin.sh AddSchema -schemaFile flights-schema.json -exec
