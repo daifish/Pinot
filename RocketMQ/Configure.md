@@ -13,7 +13,7 @@
 #####默认会分配4g内存，修改的地方在：
     /opt/alibaba-rocketmq/bin/runserver.sh 中的JAVA_OPT参数，试验中我的参数如下
     JAVA_OPT="${JAVA_OPT} -server -Xms512m -Xmx512m -Xmn256m -XX:PermSize=128m -XX:MaxPermSize=320m"
-#####4.启动master
+#####4.在a机器启动master
     cd /opt/alibaba-rocketmq/bin
     sh mqbroker -n "192.168.55.133:9876" -c ../conf/2m-2s-sync/broker-b.properties // -n 指定namesrv -c 指定启动broker的参数文件的位置（注意我这里用的是broker-b.properties，这是下载后自带的，并没用-a.propertis）
 #####broker-b.propertis配置如下：
@@ -30,7 +30,7 @@
 #####注意，启动master和slave都是启动一个broker,如果想在每台机器上开一个master，slave就要修改listenport（本例子中是a机器启动master,b、c机器启动slave），此外，启动broker的默认内存同样为4g，修改处在
     /opt/alibaba-rocketmq/bin/runbroker.sh 中的JAVA_OPT参数，试验中我的参数如下
     JAVA_OPT="${JAVA_OPT} -server -Xms512m -Xmx512m -Xmn256m -XX:PermSize=128m -XX:MaxPermSize=320m"
-#####5.启动slave
+#####5.在b机器、c机器分别启动slave
     cd /opt/alibaba-rocketmq/bin
     sh mqbroker -n "192.168.55.133:9876" -c ../conf/2m-2s-sync/broker-b-s.properties
 #####broker-b-s.properties配置如下：
