@@ -5,7 +5,7 @@
 #####1.安装jdk
 #####2.解压rocketmq的tar.gz文件，进入安装目录，如
     /opt/alibaba-rocketmq
-#####3.启动nameserver
+#####3.在a机器启动nameserver（当然可以专门拿出一个或多个机器启动nameserver，只需在接下来爹启动broker时指定好nameserver的ip:port;ip:port即可）
     cd /opt/alibaba-rocketmq/bin
     sh mqnamesrv //默认启动9876端口
 #####jps 查看进程如下即ok：
