@@ -151,7 +151,7 @@
 #####格式化zookeeper集群：
     /opt/zookeeper/bin/zkCli.sh
     ls / 
-#####你能看到当前zookeeper的znode节点情况，来到hadoop的目录执行
+#####你能看到当前zookeeper的znode节点情况，来到hadoop的目录执行(该命令建议手动输入，复制内容，格式可能有问题)
     /opt/hadoop/bin/hdfs zkfc –formatZK
 #####这时候再查看zookeeper集群的znode节点情况会有hadoop-ha这个值，嗯，那就ok了，继续吧～
 #####启动JournalNode集群，在所有的虚拟机上运行:
@@ -169,25 +169,39 @@
 #####data目录由core-site.xml文件中的属性“dfs.datanode.data.dir”指定 参考网址：http://www.iyunv.com/thread-18061-1-1.html
 #####启动格式化过的那个namenode(我们默认为ubuntu机器)
     /opt/hadoop/sbin/hadoop-daemon.sh start namenode
-#####把namenode1的数据同步到namenode2中(实际机器也就是从master到node1)，在node1机器上执行
+#####把namenode1的数据同步到namenode2中(实际机器也就是从master到node1)，在node1机器上执行（该命令建议手动输入，复制可能格式有问题）
     /opt/hadoop/bin/hdfs namenode –bootstrapStandby
 #####启动namenode2(node1机器)的namenode
     /opt/hadoop/sbin/hadoop-daemon.sh start namenode
 #####现在看192.168.55.133/192.168.55.128:50070(嗯，我的ubuntu主机和node1主机)两台机器可以看到都有namenode节点了，不过都是standby
-#####启动datanode,yarn,我直接在ubuntu（我的master机器上）start-all了
-    /opt/hadoop/sbin/start-all.sh
-#####在namenode机器上启动ZooKeeperFailoverCotroller，我这里就是ubuntu和node1两台机器
+#####在所有的namenode机器上启动ZooKeeperFailoverCotroller，我这里就是ubuntu和node1两台机器（注意，此处一定要执行保证有active的namenode，否则启动hbase会报错，说没有active的namenode）注：该命令建议手动输入，复制输入格式有问题
     /opt/hadoop/sbin/hadoop-daemon.sh start zkfc
-#####这个时候一台机器就是active，而另一台就是standby了，讲道理而言，这个先active的是先启动的机器（有待验证）
-#####jps一下，看看有多少进程了
+#####此时 先启动该进程的机器（假定为ubuntu机）会被选为active,后启动该进程的机器（假定为node1）仍为standby
+#####接下来启动datanode以及yarn
+    ＃在node1 node2两台从节点机器上（你规定的从节点机器，条件所限，本例子中node1节点承担了部分namenode功能）启动datanode
+    /opt/hadoop/sbin/hadoop-daemon.sh start datanode
+    ＃启动yarn 在active的namenode机器上执行
+    /opt/hadoop/sbin/start-yarn.sh
+#####jps一下，看看有多少进程了(active的master机上)
     24599 DFSZKFailoverController    (zkfc)  
     23396 JournalNode      
     24232 DataNode      
     23558 NameNode      
-    22491 QuorumPeerMain      
-    24654 Jps   
+    22491 QuorumPeerMain 
+    12264 ResourceManager
+    24654 Jps  
+    ###########分割线,纯粹的从节点（node2机器）的jps结果如下##########
+    5398 Jps
+    5147 JournalNode
+    5070 DataNode
+    5231 NodeManager
+    1247 QuorumPeerMain
 #####验证HA的故障自动转移是否好用 首先在当前active机器杀掉namenode，比如
     kill -9 23558
-#####再打开网页看看是否namenode已经转变了，之前standby的机器变为active，而死掉的机器重启服务后变为standby，嗯，恭喜你，成功了～ :)
+#####此时node1机器会自动切换为active状态，重启ubuntu机器后，namenode状态为standby
+#####注：以上的所有启动均为第一次配置时，当配置完成后，重启时只需要执行
+    /opt/hadoop/sbin/start-all.sh
+#####以及在两台namenode机器上启动zkfc的命令即可
+    /opt/hadoop/sbin/hadoop-daemon.sh start zkfc
 
 
