@@ -1,7 +1,6 @@
 ####Hadoop使用版本:2.6.0
 ####Hadoop配置方式:全分布式
 ####虚拟机:Ubuntu 14.04
-####参考配置链接:http://www.aboutyun.com/home.php?mod=space&do=share&view=all
 ####参考官网配置:http://hadoop.apache.org/docs/r2.6.0/
 
 #####!!!保证集群三台机器的配置一样
@@ -11,14 +10,35 @@
         192.168.55.133 ubuntu   #主机
         192.168.55.128 node1    #从节点
         192.168.55.132 node2    #从节点
-在/etc/hostname将host名依次改好，主机为ubuntu 从节点分别为node1, node2
+#####在/etc/hostname将host名依次改好，主机为ubuntu 从节点分别为node1, node2
 
-参考上面的配置链接aboutyun的配置ssh 安装java 下载hadoop，新建用户
-在这里我新建www用户、www用户组
+#####接下来安装jdk 下载hadoop相应版本
+#####新建用户，在这里我新建www用户、www用户组（分配root权限，还可以在配置文件里更改，这里用命令的方式）
+        sudo groupadd hadoop    //设置hadoop用户组
+        sudo useradd –s /bin/bash –d /home/www –m www –g www  –G admin   //添加一个www用户，此用户属于www用户组，且具有admin权限。
+        sudo passwd www   //设置用户zhm登录密码
+        su www   //切换到zhm用户中
 
-贴一下我的配置 hadoop安装在/opt/hadoop
+#####安装ssh
+        sudo apt-get install ssh
+#####配置多机间的无密码登录（ssh的原理请自行查阅,本处只着重配置）在主机执行以下命令
+        ssh-keygen -t dsa -P '' -f ~/.ssh/id_dsa //产生公私密钥，产生在用户主目录下的.ssh目录中 即~/.ssh
+        cd ~/.ssh 
+        ls //可以看到id_dsa（私钥） id_dsa.pub（公钥） 两个文件
+        cat id_das.pub >> authorized_keys //将公钥文件复制成authorized_keys文件
+        #在两个从节点~/.ssh 目录执行命令
+        scp www@master:~/ssh/id_dsa.pub ./master_dsa.pub //需要输入master机的密码
+        cat master_dsa.pub >> authorized_keys
+        #在master节点 执行命令
+        ssh node1 //进入到node1节点即为成功，首次连接需要人工询问，之后无需人工询问
+        exit //退出node1
+        ssh node2
+        exit
+        
 
-/opt/hadoop/etc/hadoop/core-site.xml:
+#####贴一下我的配置 hadoop安装在/opt/hadoop
+
+#####/opt/hadoop/etc/hadoop/core-site.xml:
 
         <configuration>
             <property>
@@ -36,7 +56,7 @@
             </property>
         </configuration>
 
-/opt/hadoop/etc/hadoop/hdfs-site.xml:
+#####/opt/hadoop/etc/hadoop/hdfs-site.xml:
 
         <configuration>
             <property>
@@ -69,7 +89,7 @@
             </property>
         </configuration>
         
-/opt/hadoop/etc/hadoop/yarn-site.xml:
+#####/opt/hadoop/etc/hadoop/yarn-site.xml:
         
         <configuration>
         <!-- Site specific YARN configuration properties -->
@@ -91,7 +111,7 @@
           </property>
         </configuration>
 
-/opt/hadoop/etc/hadoop/slaves:
+#####/opt/hadoop/etc/hadoop/slaves:
 
         node1
         node2
