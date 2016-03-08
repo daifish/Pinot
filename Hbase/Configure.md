@@ -31,12 +31,12 @@ hbase-site.xml
     </property>
     <property>
         <name>hbase.tmp.dir</name>
-        <value>file:/opt/hbase/tmp</value>
+        <value>file://opt/hbase/tmp</value>
         #临时文件的文件夹
     </property>
     <property>
         <name>hbase.zookeeper.property.dataDir</name>
-        <value>file:/opt/hbase/zookeeper</value>
+        <value>file://opt/hbase/zookeeper</value>
     </property>
     <property>
         <name>hbase.zookeeper.quorum</name>
