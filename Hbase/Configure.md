@@ -52,6 +52,8 @@ regionservers
 #####两个从节点，列在这里的server会随着集群的启动而启动，集群的停止而停止.
 
 #####启动Hbase:在Hbase的当前级别文件夹,执行bin/start-hbase.sh即可
+#####注：如果采用自己搭建的zookeeper集群，建议将start-hbase.sh启动脚本中的57 行注释掉，禁止hbase自带的zookeeper启动
+    #"$bin"/hbase-daemons.sh --config "${HBASE_CONF_DIR}" $commandToRun zookeeper
 #####终止Hbase:在Hbase的当前级别文件夹,执行bin/stop-hbase.sh即可
 
 
