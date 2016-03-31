@@ -55,5 +55,11 @@ regionservers
 #####注：如果采用自己搭建的zookeeper集群，建议将start-hbase.sh启动脚本中的57 行注释掉，禁止hbase自带的zookeeper启动
     #"$bin"/hbase-daemons.sh --config "${HBASE_CONF_DIR}" $commandToRun zookeeper
 #####终止Hbase:在Hbase的当前级别文件夹,执行bin/stop-hbase.sh即可
+#####记录一次hbase异常：
+#####hbase的单机regionserver启动一直报
+        Caused by: java.lang.OutOfMemoryError: unable to create new native thread
+#####这个错误很明显oom，但是调整了hbase regionserver的-xmx -xms之后依旧不行，此时free查看内存还有3g之多
+#####解决思路：后来发现确实还是内存不足了，单机情况的hadoop的namenode datanode都会默认分配-xmx1g内存，而hbase的master同样是-xmx1g，region server默认分配虚拟机最大内存的四分之一（服务器12g，此处就是3g）也就是说此时所有需要分配的最大xmx要达到5g，jvm认为不足（虽然当前有3g，应该是这样） 所以应用最好指定好分配的内存。 
+#####另外：-xmx是最大分配内存 -xms是最小分配内存，如-xmx1g －xms512m 系统会分配给应用512m内存，然后动态分配内存，到1g之后再去申请内存则会报oom， 注意hbase分配默认-xms是0，也就是说hbase刚启动时占用内存可能就10几m，这是很正常的
 
 
